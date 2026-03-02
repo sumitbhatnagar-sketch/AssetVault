@@ -3,316 +3,622 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AssetVerify v2 — Asset Verification Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>AXON — Fixed Asset Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
-  const FIREBASE_CONFIG = {
-    apiKey:            "AIzaSyBqcUr_9hiKa2ybosZsKlnMDMu5zGG7ZmM",
-    authDomain:        "assetverify-6a171.firebaseapp.com",
-    projectId:         "assetverify-6a171",
-    storageBucket:     "assetverify-6a171.firebasestorage.app",
-    messagingSenderId: "901635583380",
-    appId:             "1:901635583380:web:ac03d48bd485fd711cb381"
-  };
+const FIREBASE_CONFIG = {
+  apiKey:"AIzaSyBqcUr_9hiKa2ybosZsKlnMDMu5zGG7ZmM",
+  authDomain:"assetverify-6a171.firebaseapp.com",
+  projectId:"assetverify-6a171",
+  storageBucket:"assetverify-6a171.firebasestorage.app",
+  messagingSenderId:"901635583380",
+  appId:"1:901635583380:web:ac03d48bd485fd711cb381"
+};
 </script>
 <style>
-:root{
-  --bg:#F5F3EE;--surface:#FFF;--surface2:#EDEBE5;--ink:#1A1714;
-  --ink2:#6B6560;--ink3:#9B958F;--accent:#C84B2F;--accent2:#E8A020;
-  --accent-lt:#FBF0ED;--border:#DDD9D2;--success:#2D6A4F;
-  --success-lt:#E8F5EE;--danger:#C0392B;--danger-lt:#FDEDEC;
-  --shadow:0 2px 12px rgba(26,23,20,.08);--shadow-lg:0 8px 40px rgba(26,23,20,.14);
-  --radius:12px;--radius-sm:8px;
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   AXON — CLEAN WHITE × ELECTRIC BLUE
+   DM Sans + DM Mono · Notion/Linear feel
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+:root {
+  --white:   #FFFFFF;
+  --bg:      #F7F8FA;
+  --bg2:     #EFF1F5;
+  --surface: #FFFFFF;
+  --surf2:   #F4F6F9;
+  --surf3:   #EAECF1;
+  --border:  #E3E7EF;
+  --border2: #D0D6E2;
+  --ink:     #111827;
+  --ink2:    #4B5563;
+  --ink3:    #9CA3AF;
+  --ink4:    #D1D5DB;
+
+  --blue:    #2563EB;
+  --blue-h:  #1D4ED8;
+  --blue-lt: #EFF6FF;
+  --blue-md: rgba(37,99,235,.1);
+  --blue-bd: rgba(37,99,235,.2);
+  --blue-glow: 0 4px 16px rgba(37,99,235,.22);
+
+  --green:   #059669;
+  --green-lt:#ECFDF5;
+  --amber:   #D97706;
+  --amber-lt:#FFFBEB;
+  --red:     #DC2626;
+  --red-lt:  #FEF2F2;
+  --purple:  #7C3AED;
+  --purple-lt:#F5F3FF;
+
+  --shadow-xs: 0 1px 2px rgba(17,24,39,.05);
+  --shadow-sm: 0 1px 4px rgba(17,24,39,.07), 0 2px 8px rgba(17,24,39,.04);
+  --shadow:    0 2px 8px rgba(17,24,39,.08), 0 4px 24px rgba(17,24,39,.05);
+  --shadow-md: 0 4px 16px rgba(17,24,39,.1), 0 8px 40px rgba(17,24,39,.06);
+  --shadow-lg: 0 8px 32px rgba(17,24,39,.12), 0 20px 60px rgba(17,24,39,.08);
+
+  --r:    10px;
+  --r-sm: 7px;
+  --r-lg: 14px;
+  --r-xl: 20px;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
-h1,h2,h3,h4{font-family:'Syne',sans-serif}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-/* AUTH */
-#authScreen{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-.auth-left{background:var(--ink);color:#fff;padding:60px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-.auth-left::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(200,75,47,.3) 0%,transparent 70%);top:-100px;left:-100px;pointer-events:none}
-.auth-left::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(232,160,32,.2) 0%,transparent 70%);bottom:80px;right:-60px;pointer-events:none}
-.brand{position:relative;z-index:1}
-.brand-logo{display:flex;align-items:center;gap:12px;margin-bottom:60px}
-.brand-icon{width:44px;height:44px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
-.brand-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.03em;color:#fff}
-.brand-tagline{font-size:42px;font-weight:800;line-height:1.1;letter-spacing:-.03em;color:#fff;margin-bottom:20px}
-.brand-tagline span{color:var(--accent2)}
-.brand-desc{font-size:15px;color:rgba(255,255,255,.55);line-height:1.6;max-width:320px}
-.auth-features{position:relative;z-index:1;display:flex;flex-direction:column;gap:14px}
-.auth-feat{display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.7)}
-.auth-feat-icon{width:32px;height:32px;background:rgba(255,255,255,.08);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.auth-right{background:var(--bg);display:flex;align-items:center;justify-content:center;padding:40px}
-.auth-box{width:100%;max-width:420px}
-.auth-tabs{display:flex;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:32px}
-.auth-tab{flex:1;padding:10px;text-align:center;border-radius:7px;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink2);transition:all .2s;border:none;background:none;font-family:'DM Sans',sans-serif}
-.auth-tab.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 6px rgba(0,0,0,.1)}
-.auth-form-title{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.auth-form-sub{font-size:13px;color:var(--ink2);margin-bottom:28px}
-.auth-panel{display:none}
-.auth-panel.active{display:block}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+html { scroll-behavior: smooth }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 5px; height: 5px }
+::-webkit-scrollbar-track { background: transparent }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px }
 
-/* FORMS */
-.field{margin-bottom:18px}
-.field label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;padding:12px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,75,47,.1)}
-.field textarea{resize:vertical;min-height:72px}
-.field input.dup-warn{border-color:var(--accent2)!important;box-shadow:0 0 0 3px rgba(232,160,32,.15)!important}
-.dup-hint{font-size:11px;color:var(--accent2);margin-top:4px;display:none}
-.dup-hint.show{display:block}
-.btn{padding:12px 24px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .18s;display:inline-flex;align-items:center;gap:8px}
-.btn-primary{background:var(--accent);color:#fff;width:100%;justify-content:center;font-size:15px;padding:14px}
-.btn-primary:hover{background:#b03f25;transform:translateY(-1px);box-shadow:0 4px 20px rgba(200,75,47,.3)}
-.btn-primary:disabled{background:#ccc;transform:none;box-shadow:none;cursor:not-allowed}
-.btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--border)}
-.btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
-.btn-sm{padding:7px 14px;font-size:12px}
-.btn-danger{background:var(--danger-lt);color:var(--danger);border:1px solid #f5c6c2}
-.btn-danger:hover{background:var(--danger);color:#fff}
-.btn-icon{width:34px;height:34px;padding:0;border-radius:8px;justify-content:center}
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--ink3);font-size:12px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.error-msg{background:var(--danger-lt);border:1px solid #f5c6c2;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:16px;display:none}
-.error-msg.show{display:block}
+/* ── LOADING ── */
+#loadingOverlay {
+  position: fixed; inset: 0; background: var(--white); z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+}
+.load-wordmark {
+  display: flex; align-items: center; gap: 11px;
+}
+.load-icon {
+  width: 42px; height: 42px; border-radius: 11px; background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 18px; font-weight: 800;
+  box-shadow: var(--blue-glow);
+}
+.load-name { font-size: 24px; font-weight: 800; letter-spacing: -.03em; color: var(--ink) }
+.load-sub { font-size: 12px; color: var(--ink3); letter-spacing: .04em }
+.load-bar-wrap { width: 180px; height: 3px; background: var(--border); border-radius: 3px; overflow: hidden }
+.load-bar { height: 100%; width: 0; background: var(--blue); border-radius: 3px; animation: loadbar 1.6s ease forwards }
+@keyframes loadbar { to { width: 100% } }
 
-/* LOADING */
-#loadingOverlay{position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:9998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* ── AUTH ── */
+#authScreen {
+  display: none; min-height: 100vh;
+  background: var(--bg);
+}
+.auth-layout {
+  min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr;
+}
+.auth-left {
+  background: var(--blue);
+  padding: 56px 60px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+/* Subtle geometric pattern on auth left */
+.auth-left::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.08) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+.auth-left::after {
+  content: '';
+  position: absolute; bottom: -80px; right: -80px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+}
+.auth-brand { display: flex; align-items: center; gap: 11px; position: relative; z-index: 1 }
+.auth-brand-icon {
+  width: 38px; height: 38px; border-radius: 9px;
+  background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; color: white;
+}
+.auth-brand-name { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: white }
+.auth-hero { position: relative; z-index: 1 }
+.auth-hero h1 {
+  font-size: 46px; font-weight: 800; line-height: 1.05;
+  letter-spacing: -.04em; color: white; margin-bottom: 16px;
+}
+.auth-hero p { font-size: 15px; color: rgba(255,255,255,.72); line-height: 1.65; max-width: 340px }
+.auth-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px }
+.auth-chip {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 30px; padding: 6px 14px;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.88);
+}
+.auth-stats { display: flex; gap: 36px; position: relative; z-index: 1 }
+.auth-stat-val { font-size: 30px; font-weight: 800; letter-spacing: -.03em; color: white }
+.auth-stat-lbl { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 2px }
 
-/* MAIN APP */
-#appScreen{display:none;min-height:100vh}
-.navbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:var(--shadow)}
-.nav-brand{display:flex;align-items:center;gap:10px}
-.nav-brand-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.nav-brand-name{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.02em}
-.nav-company-pill{display:flex;align-items:center;gap:8px;background:var(--accent-lt);border:1px solid #f0c8be;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;color:var(--accent)}
-.nav-right{display:flex;align-items:center;gap:12px}
-.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;background:var(--accent)}
-.app-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 60px)}
-.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:20px 12px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
-.sidebar-section{margin-bottom:24px}
-.sidebar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);padding:0 12px;margin-bottom:6px}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
-.sidebar-item:hover{background:var(--surface2);color:var(--ink)}
-.sidebar-item.active{background:var(--accent-lt);color:var(--accent);font-weight:600}
-.sidebar-item .s-icon{font-size:16px;width:20px;text-align:center}
-.sidebar-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
-.main{padding:32px;overflow-y:auto}
-.page{display:none}
-.page.active{display:block;animation:fadeIn .25s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px}
-.page-title{font-size:26px;font-weight:800;letter-spacing:-.02em}
-.page-sub{font-size:13px;color:var(--ink2);margin-top:3px}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent)}
-.stat-card.green::before{background:var(--success)}
-.stat-card.amber::before{background:var(--accent2)}
-.stat-card.blue::before{background:#2980b9}
-.stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin-bottom:8px}
-.stat-value{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
-.stat-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:32px;opacity:.12}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
-.card-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.card-head h3{font-size:15px;font-weight:700}
-.card-body{padding:22px}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.form-grid .field.span2{grid-column:span 2}
-.form-grid .field.span3{grid-column:span 3}
-.form-actions{display:flex;gap:10px;margin-top:6px}
-.form-actions .btn-primary{width:auto;flex:1}
-.table-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
-.table-toolbar .field{margin-bottom:0;min-width:140px}
-.table-toolbar .field input,.table-toolbar .field select{padding:9px 12px;font-size:13px}
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead{background:var(--bg)}
-th{padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer}
-th:hover{color:var(--accent)}
-td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--bg)}
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.empty-state{text-align:center;padding:60px 24px}
-.empty-icon{font-size:52px;margin-bottom:12px;opacity:.4}
-.empty-title{font-size:16px;font-weight:700;margin-bottom:6px}
-.empty-desc{font-size:13px;color:var(--ink2)}
-.toast-container{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:9999}
-.toast{background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);transform:translateX(120%);transition:transform .3s cubic-bezier(.175,.885,.32,1.275);max-width:320px}
-.toast.show{transform:translateX(0)}
-.toast.success{background:var(--success)}
-.toast.error{background:var(--danger)}
-.toast.warning{background:var(--accent2);color:var(--ink)}
-.modal-overlay{position:fixed;inset:0;background:rgba(26,23,20,.5);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
-.modal-overlay.show{opacity:1;pointer-events:all}
-.modal{background:var(--surface);border-radius:16px;padding:28px;width:100%;max-width:580px;box-shadow:var(--shadow-lg);transform:scale(.95);transition:transform .2s;max-height:90vh;overflow-y:auto}
-.modal-overlay.show .modal{transform:scale(1)}
-.modal-title{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.summary-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
-.summary-row:last-child{border-bottom:none}
-.summary-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--accent)}
-.company-select-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:40px}
-.company-select-box{max-width:520px;width:100%}
-.company-cards{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
-.company-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:18px 20px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:16px}
-.company-card:hover{border-color:var(--accent);box-shadow:0 4px 20px rgba(200,75,47,.1);transform:translateY(-1px)}
-.company-avatar{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;flex-shrink:0}
-.company-info h4{font-size:15px;font-weight:700;margin-bottom:3px}
-.company-info p{font-size:12px;color:var(--ink2)}
-.company-arrow{margin-left:auto;color:var(--ink3);font-size:18px}
-/* Condition badges */
-.cond-Good{background:#e8f5ee;color:#2d6a4f}
-.cond-Fair{background:#fff8e1;color:#f57f17}
-.cond-Poor{background:#fff3e0;color:#e65100}
-.cond-Damaged{background:#fdedec;color:#c0392b}
-.cond-Missing{background:#f3e5f5;color:#6a1b9a}
-/* Status badges */
-.status-Active{background:#e8f5ee;color:#2d6a4f}
-.status-Sold{background:#e3f2fd;color:#1565c0}
-.status-Scrapped{background:#fbe9e7;color:#bf360c}
-.status-Discarded{background:#f3e5f5;color:#6a1b9a}
-.sync-dot{width:8px;height:8px;border-radius:50%;background:#ccc;display:inline-block;margin-left:4px}
-.sync-dot.synced{background:var(--success)}
-.sync-dot.syncing{background:var(--accent2);animation:pulse .8s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-/* Bucket tabs */
-.bucket-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.bucket-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--ink2);transition:all .15s}
-.bucket-tab:hover{border-color:var(--accent);color:var(--accent)}
-.bucket-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-/* Depreciation table */
-.dep-table th{background:var(--surface2)}
-.dep-rate-cell{font-family:monospace;font-size:12px;color:var(--ink2)}
+.auth-right {
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px; background: var(--white);
+}
+.auth-box { width: 100%; max-width: 380px }
+.auth-tabs {
+  display: flex; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 3px; margin-bottom: 28px;
+}
+.auth-tab {
+  flex: 1; padding: 8px; text-align: center; border-radius: 7px;
+  font-size: 13px; font-weight: 600; color: var(--ink3);
+  cursor: pointer; border: none; background: none;
+  font-family: 'DM Sans', sans-serif; transition: all .18s;
+}
+.auth-tab.active {
+  background: var(--white); color: var(--ink);
+  box-shadow: var(--shadow-xs); border: 1px solid var(--border);
+}
+.auth-panel { display: none }
+.auth-panel.active { display: block }
+.auth-form-title { font-size: 22px; font-weight: 800; letter-spacing: -.03em; color: var(--ink); margin-bottom: 4px }
+.auth-form-sub { font-size: 13px; color: var(--ink3); margin-bottom: 24px }
+
+/* FIELDS */
+.field { margin-bottom: 16px }
+.field label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--ink2); margin-bottom: 6px;
+}
+.field input, .field select, .field textarea {
+  width: 100%; padding: 10px 13px;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--r-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: var(--ink); outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-md);
+}
+.field input::placeholder, .field textarea::placeholder { color: var(--ink4) }
+.field select option { background: white; color: var(--ink) }
+.field textarea { resize: vertical; min-height: 72px }
+.field input.dup-warn { border-color: var(--amber) !important; box-shadow: 0 0 0 3px rgba(217,119,6,.12) !important }
+.dup-hint { font-size: 11px; color: var(--amber); margin-top: 4px; display: none }
+.dup-hint.show { display: block }
+
+/* BUTTONS */
+.btn {
+  padding: 10px 18px; border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-primary {
+  background: var(--blue); color: white;
+  width: 100%; justify-content: center; padding: 12px;
+  box-shadow: var(--blue-glow);
+}
+.btn-primary:hover { background: var(--blue-h); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,.3) }
+.btn-primary:disabled { background: var(--border2); color: var(--ink3); box-shadow: none; transform: none; cursor: not-allowed }
+.btn-ghost {
+  background: var(--white); color: var(--ink2);
+  border: 1.5px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--border2); color: var(--ink); background: var(--surf2) }
+.btn-sm { padding: 7px 13px; font-size: 12px }
+.btn-danger { background: var(--red-lt); color: var(--red); border: 1.5px solid #FECACA }
+.btn-danger:hover { background: var(--red); color: white; border-color: var(--red) }
+.btn-icon { width: 30px; height: 30px; padding: 0; border-radius: var(--r-sm); justify-content: center; font-size: 13px }
+
+.divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--ink3); font-size: 12px }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border) }
+.error-msg {
+  background: var(--red-lt); border: 1.5px solid #FECACA;
+  border-radius: var(--r-sm); padding: 10px 14px;
+  font-size: 13px; color: var(--red); margin-bottom: 16px; display: none;
+}
+.error-msg.show { display: block }
+
+/* ── COMPANY SELECT ── */
+#companyScreen {
+  display: none; min-height: 100vh;
+  align-items: center; justify-content: center;
+  background: var(--bg); padding: 40px;
+}
+#companyScreen.flex { display: flex }
+.co-box { width: 100%; max-width: 480px }
+.co-title { font-size: 32px; font-weight: 800; letter-spacing: -.03em; color: var(--ink); margin-bottom: 4px }
+.co-sub { font-size: 14px; color: var(--ink3); margin-bottom: 28px }
+.co-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px }
+.co-card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px 18px;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow-xs);
+}
+.co-card:hover { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-md); transform: translateY(-1px) }
+.co-avatar {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; color: white; flex-shrink: 0;
+}
+.co-name { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 2px }
+.co-ind { font-size: 11px; color: var(--ink3) }
+.co-arrow { margin-left: auto; color: var(--ink4); font-size: 18px; transition: all .15s }
+.co-card:hover .co-arrow { color: var(--blue); transform: translateX(3px) }
+.co-join {
+  width: 100%; padding: 14px; border-radius: var(--r-lg);
+  border: 1.5px dashed var(--border); background: transparent;
+  font-size: 13px; font-weight: 600; color: var(--ink3); text-align: center;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .15s;
+}
+.co-join:hover { border-color: var(--blue); color: var(--blue) }
+
+/* ── APP SHELL ── */
+#appScreen { display: none; min-height: 100vh }
+
+/* TOPBAR */
+.topbar {
+  height: 56px; background: var(--white);
+  border-bottom: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; position: sticky; top: 0; z-index: 200;
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px }
+.topbar-icon {
+  width: 28px; height: 28px; border-radius: 7px; background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: white;
+}
+.topbar-name { font-size: 15px; font-weight: 800; letter-spacing: -.02em; color: var(--ink) }
+.topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px }
+.topbar-co {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--blue-lt); border: 1px solid var(--blue-bd);
+  border-radius: 7px; padding: 4px 11px; font-size: 12px; font-weight: 600; color: var(--blue);
+}
+.co-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue) }
+.topbar-right { display: flex; align-items: center; gap: 8px }
+.sync-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surf2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 4px 10px;
+}
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2) }
+.sync-dot.live { background: var(--green); box-shadow: 0 0 0 2px var(--green-lt) }
+.sync-dot.syncing { background: var(--amber); animation: blink .7s infinite }
+.sync-lbl { font-size: 10px; font-weight: 600; color: var(--ink3) }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+.user-pill {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surf2); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 3px 12px 3px 3px;
+}
+.user-av {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+}
+.user-name { font-size: 12px; font-weight: 600; color: var(--ink2) }
+
+/* APP LAYOUT */
+.app-layout { display: grid; grid-template-columns: 216px 1fr; min-height: calc(100vh - 56px) }
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--white); border-right: 1.5px solid var(--border);
+  padding: 16px 10px; position: sticky; top: 56px;
+  height: calc(100vh - 56px); overflow-y: auto;
+}
+.sidebar-section { margin-bottom: 24px }
+.sidebar-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--ink3); padding: 0 10px; margin-bottom: 4px;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 7px; font-size: 13px;
+  font-weight: 500; color: var(--ink2); cursor: pointer;
+  transition: all .12s; border: none; background: none;
+  width: 100%; text-align: left; font-family: 'DM Sans', sans-serif;
+}
+.sidebar-item:hover { background: var(--surf2); color: var(--ink) }
+.sidebar-item.active { background: var(--blue-lt); color: var(--blue); font-weight: 600 }
+.s-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0 }
+.sidebar-badge {
+  margin-left: auto; background: var(--blue); color: white;
+  font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 10px;
+}
+
+/* MAIN */
+.main { padding: 28px; background: var(--bg) }
+.page { display: none }
+.page.active { display: block; animation: fadeUp .2s ease }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px }
+.page-title { font-size: 24px; font-weight: 800; letter-spacing: -.03em; color: var(--ink) }
+.page-sub { font-size: 13px; color: var(--ink3); margin-top: 3px }
+
+/* STAT CARDS */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px }
+.stat-card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--r-lg); padding: 18px 20px;
+  box-shadow: var(--shadow-xs); position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--blue);
+}
+.stat-card.green::before { background: var(--green) }
+.stat-card.amber::before { background: var(--amber) }
+.stat-card.purple::before { background: var(--purple) }
+.stat-icon {
+  width: 36px; height: 36px; border-radius: 9px; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  background: var(--blue-lt);
+}
+.stat-card.green .stat-icon { background: var(--green-lt) }
+.stat-card.amber .stat-icon { background: var(--amber-lt) }
+.stat-card.purple .stat-icon { background: var(--purple-lt) }
+.stat-label { font-size: 11px; font-weight: 600; color: var(--ink3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em }
+.stat-value { font-size: 26px; font-weight: 800; letter-spacing: -.03em; color: var(--ink) }
+
+/* CARDS */
+.card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-xs); overflow: hidden }
+.card-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between }
+.card-head h3 { font-size: 13px; font-weight: 700; color: var(--ink) }
+.card-body { padding: 16px 18px }
+.summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--ink2) }
+.summary-row:last-child { border-bottom: none }
+.summary-val { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--blue); font-size: 12px }
+
+/* SEARCH BAR */
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--r); padding: 9px 14px; margin-bottom: 14px;
+  box-shadow: var(--shadow-xs); transition: border-color .15s, box-shadow .15s;
+}
+.search-bar:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-md) }
+.search-bar input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink);
+}
+.search-bar input::placeholder { color: var(--ink4) }
+
+/* TABLE */
+.table-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px }
+.table-toolbar .field { margin-bottom: 0; min-width: 130px }
+.table-toolbar .field input, .table-toolbar .field select { padding: 8px 11px; font-size: 12px }
+.table-wrap { overflow-x: auto; border-radius: var(--r-lg); border: 1.5px solid var(--border); background: var(--white); box-shadow: var(--shadow-xs) }
+table { width: 100%; border-collapse: collapse; font-size: 12px }
+thead { background: var(--surf2) }
+th { padding: 10px 13px; text-align: left; font-size: 10px; font-weight: 700; color: var(--ink3); text-transform: uppercase; letter-spacing: .09em; border-bottom: 1.5px solid var(--border); white-space: nowrap; cursor: pointer; transition: color .12s; user-select: none }
+th:hover { color: var(--blue) }
+td { padding: 11px 13px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--ink2); background: var(--white) }
+tr:last-child td { border-bottom: none }
+tr:hover td { background: var(--surf2) }
+tr.row-sel td { background: var(--blue-lt) }
+.mono { font-family: 'DM Mono', monospace; font-size: 11px }
+.tag-cell { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); font-weight: 500 }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700 }
+.cond-Good    { background: var(--green-lt); color: var(--green) }
+.cond-Fair    { background: var(--amber-lt); color: var(--amber) }
+.cond-Poor    { background: #FFF7ED; color: #C2410C }
+.cond-Damaged { background: var(--red-lt);   color: var(--red) }
+.cond-Missing { background: var(--purple-lt); color: var(--purple) }
+.status-Active    { background: var(--green-lt);  color: var(--green) }
+.status-Sold      { background: var(--blue-lt);   color: var(--blue) }
+.status-Scrapped  { background: #FFF7ED; color: #C2410C }
+.status-Discarded { background: var(--purple-lt); color: var(--purple) }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 56px 24px }
+.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: .3 }
+.empty-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 5px }
+.empty-desc { font-size: 13px; color: var(--ink3) }
+
+/* TOASTS */
+.toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 9999 }
+.toast { background: var(--ink); color: white; padding: 11px 18px; border-radius: var(--r); font-size: 13px; font-weight: 500; box-shadow: var(--shadow-md); transform: translateX(120%); transition: transform .3s cubic-bezier(.175,.885,.32,1.275); max-width: 320px }
+.toast.show { transform: translateX(0) }
+.toast.success { background: var(--green); color: white }
+.toast.error   { background: var(--red); color: white }
+.toast.warning { background: var(--amber); color: white }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(17,24,39,.45); backdrop-filter: blur(4px); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .18s }
+.modal-overlay.show { opacity: 1; pointer-events: all }
+.modal { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-xl); padding: 28px; width: 100%; max-width: 540px; box-shadow: var(--shadow-lg); transform: scale(.97); transition: transform .18s; max-height: 90vh; overflow-y: auto }
+.modal-overlay.show .modal { transform: scale(1) }
+.modal-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); margin-bottom: 20px; display: flex; align-items: center; gap: 8px }
+
+/* FORM GRID */
+.form-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px }
+.form-grid .field.span2 { grid-column: span 2 }
+.form-grid .field.span3 { grid-column: span 3 }
+.form-actions { display: flex; gap: 10px; margin-top: 8px }
+.form-actions .btn-primary { width: auto; flex: 1 }
+
+/* BUCKET TABS */
+.bucket-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px }
+.bucket-tab { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--ink2); transition: all .12s; font-family: 'DM Sans', sans-serif }
+.bucket-tab:hover { border-color: var(--blue); color: var(--blue) }
+.bucket-tab.active { background: var(--blue); color: white; border-color: var(--blue); box-shadow: var(--blue-glow) }
+
+/* DEP */
+.dep-rate { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink3) }
+
+/* IMPORT */
+.import-drop { border: 2px dashed var(--border); border-radius: var(--r-lg); padding: 44px; text-align: center; cursor: pointer; transition: all .15s; background: var(--surf2) }
+.import-drop:hover { border-color: var(--blue); background: var(--blue-lt) }
+.import-drop-icon { font-size: 44px; margin-bottom: 12px; display: block }
+.progress-track { background: var(--border); border-radius: 10px; height: 6px; overflow: hidden }
+.progress-fill { height: 100%; width: 0; background: var(--blue); border-radius: 10px; transition: width .3s }
+
+/* ADMIN TOGGLE */
+.toggle { width: 40px; height: 22px; border-radius: 11px; background: var(--border2); position: relative; cursor: pointer; transition: background .2s; flex-shrink: 0 }
+.toggle.on { background: var(--green) }
+.toggle-knob { width: 16px; height: 16px; border-radius: 50%; background: white; position: absolute; top: 3px; left: 3px; transition: left .2s; box-shadow: var(--shadow-xs) }
+.toggle.on .toggle-knob { left: 21px }
+
+/* RESPONSIVE */
 @media(max-width:900px){
-  #authScreen{grid-template-columns:1fr}
-  .auth-left{display:none}
+  .auth-layout{grid-template-columns:1fr}.auth-left{display:none}
   .stats-row{grid-template-columns:1fr 1fr}
-  .app-layout{grid-template-columns:1fr}
-  .sidebar{display:none}
+  .app-layout{grid-template-columns:1fr}.sidebar{display:none}
   .form-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:600px){
   .stats-row{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr}
-  .form-grid .field.span2,.form-grid .field.span3{grid-column:span 1}
-  .summary-grid{grid-template-columns:1fr}
-  .main{padding:16px}
-  .navbar{padding:0 16px}
+  .form-grid{grid-column:span 1 !important;grid-template-columns:1fr}
+  .main{padding:16px}.topbar{padding:0 16px}
 }
 </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div id="loadingOverlay">
-  <div class="spinner"></div>
-  <div style="font-size:14px;color:var(--ink2);font-weight:500">Loading AssetVerify v2...</div>
+  <div class="load-wordmark">
+    <div class="load-icon">Ax</div>
+    <div class="load-name">AXON</div>
+  </div>
+  <div class="load-sub">Fixed Asset Intelligence · Loading</div>
+  <div class="load-bar-wrap"><div class="load-bar"></div></div>
 </div>
 
-<!-- AUTH SCREEN -->
-<div id="authScreen" style="display:none">
-  <div class="auth-left">
-    <div class="brand">
-      <div class="brand-logo">
-        <div class="brand-icon">📋</div>
-        <div class="brand-name">AssetVerify</div>
+<!-- AUTH -->
+<div id="authScreen">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="auth-brand">
+        <div class="auth-brand-icon">Ax</div>
+        <div class="auth-brand-name">AXON</div>
       </div>
-      <div class="brand-tagline">Physical Asset<br><span>Verification</span><br>Platform</div>
-      <div class="brand-desc">Built for Acefone Software, Servetel Communications &amp; Servetel Infocomm — one platform for all your legal entities.</div>
-    </div>
-    <div class="auth-features">
-      <div class="auth-feat"><div class="auth-feat-icon">🔥</div>Live cloud sync — all team members see the same data instantly</div>
-      <div class="auth-feat"><div class="auth-feat-icon">🏢</div>3 companies pre-loaded — separate data per legal entity</div>
-      <div class="auth-feat"><div class="auth-feat-icon">📊</div>Depreciation register, bucketing &amp; asset status tracking</div>
-      <div class="auth-feat"><div class="auth-feat-icon">📥</div>Bulk CSV import with duplicate detection</div>
-    </div>
-  </div>
-  <div class="auth-right">
-    <div class="auth-box">
-      <div class="auth-tabs">
-        <button class="auth-tab active" onclick="window.showAuthPanel('login',event)">Sign In</button>
-        <button class="auth-tab" onclick="window.showAuthPanel('register',event)">Register</button>
-      </div>
-      <div class="auth-panel active" id="loginPanel">
-        <h2 class="auth-form-title">Welcome back</h2>
-        <p class="auth-form-sub">Sign in to access your company's assets</p>
-        <div class="error-msg" id="loginError"></div>
-        <div class="field"><label>Email Address</label><input type="email" id="loginEmail" placeholder="you@servetel.in"></div>
-        <div class="field"><label>Password</label><input type="password" id="loginPass" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-        <button class="btn btn-primary" id="loginBtn" onclick="window.doLogin()">Sign In →</button>
-        <div style="text-align:center;margin-top:14px">
-          <a href="#" onclick="window.doForgotPassword()" style="font-size:13px;color:var(--accent);font-weight:600">Forgot password?</a>
+      <div class="auth-hero">
+        <h1>Fixed Asset<br>Intelligence<br>Platform</h1>
+        <p>One platform for all your legal entities. Track, verify, depreciate and manage every fixed asset — in real time.</p>
+        <div class="auth-chips">
+          <div class="auth-chip">☁ Live cloud sync</div>
+          <div class="auth-chip">🏢 3 legal entities</div>
+          <div class="auth-chip">📉 Depreciation register</div>
+          <div class="auth-chip">🔐 Admin controls</div>
+          <div class="auth-chip">📥 CSV import</div>
         </div>
-        <div class="divider">or</div>
-        <p style="text-align:center;font-size:13px;color:var(--ink2)">New user? <a href="#" onclick="window.showAuthPanel('register',event)" style="color:var(--accent);font-weight:600">Register here</a></p>
       </div>
-      <div class="auth-panel" id="registerPanel">
-        <h2 class="auth-form-title">Create Account</h2>
-        <p class="auth-form-sub">Register and join your company</p>
-        <div class="error-msg" id="registerError"></div>
-        <div class="field"><label>Full Name</label><input type="text" id="regName" placeholder="Your full name"></div>
-        <div class="field"><label>Email Address</label><input type="email" id="regEmail" placeholder="you@servetel.in"></div>
-        <div class="field"><label>Password (min 6 chars)</label><input type="password" id="regPass" placeholder="Create a password"></div>
-        <div class="field"><label>Confirm Password</label><input type="password" id="regPass2" placeholder="Repeat password"></div>
-        <div class="field">
-          <label>Your Company</label>
-          <select id="regCompany">
-            <option value="">— Select your company —</option>
-            <option value="ace001">Acefone Software Pvt Ltd</option>
-            <option value="srv001">Servetel Communications Pvt Ltd</option>
-            <option value="srv002">Servetel Infocomm Pvt Ltd</option>
-          </select>
+      <div class="auth-stats">
+        <div>
+          <div class="auth-stat-val">3+</div>
+          <div class="auth-stat-lbl">Legal Entities</div>
         </div>
-        <button class="btn btn-primary" id="registerBtn" onclick="window.doRegister()">Create Account →</button>
-        <p style="margin-top:14px;text-align:center;font-size:13px;color:var(--ink2)">Already registered? <a href="#" onclick="window.showAuthPanel('login',event)" style="color:var(--accent);font-weight:600">Sign in</a></p>
+        <div>
+          <div class="auth-stat-val">∞</div>
+          <div class="auth-stat-lbl">Assets Supported</div>
+        </div>
+        <div>
+          <div class="auth-stat-val">2×</div>
+          <div class="auth-stat-lbl">Dep. Methods</div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-box">
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="window.showAuthPanel('login',event)">Sign In</button>
+          <button class="auth-tab" onclick="window.showAuthPanel('register',event)">Register</button>
+        </div>
+        <div class="auth-panel active" id="loginPanel">
+          <div class="auth-form-title">Welcome back</div>
+          <div class="auth-form-sub">Sign in to access your company's assets</div>
+          <div class="error-msg" id="loginError"></div>
+          <div class="field"><label>Email Address</label><input type="email" id="loginEmail" placeholder="you@servetel.in"></div>
+          <div class="field"><label>Password</label><input type="password" id="loginPass" placeholder="Your password" onkeydown="if(event.key==='Enter')window.doLogin()"></div>
+          <button class="btn btn-primary" id="loginBtn" onclick="window.doLogin()">Sign In →</button>
+          <div style="text-align:center;margin-top:14px">
+            <a href="#" onclick="window.doForgotPassword()" style="font-size:13px;color:var(--blue);font-weight:600">Forgot password?</a>
+          </div>
+          <div class="divider">or</div>
+          <p style="text-align:center;font-size:13px;color:var(--ink3)">New user? <a href="#" onclick="window.showAuthPanel('register',event)" style="color:var(--blue);font-weight:600">Register here</a></p>
+        </div>
+        <div class="auth-panel" id="registerPanel">
+          <div class="auth-form-title">Create account</div>
+          <div class="auth-form-sub">Join your company on AXON</div>
+          <div class="error-msg" id="registerError"></div>
+          <div class="field"><label>Full Name</label><input type="text" id="regName" placeholder="Your full name"></div>
+          <div class="field"><label>Email Address</label><input type="email" id="regEmail" placeholder="you@servetel.in"></div>
+          <div class="field"><label>Password</label><input type="password" id="regPass" placeholder="Min 6 characters"></div>
+          <div class="field"><label>Confirm Password</label><input type="password" id="regPass2" placeholder="Repeat password"></div>
+          <div class="field"><label>Your Company</label>
+            <select id="regCompany">
+              <option value="">— Select company —</option>
+              <option value="ace001">Acefone Software Pvt Ltd</option>
+              <option value="srv001">Servetel Communications Pvt Ltd</option>
+              <option value="srv002">Servetel Infocomm Pvt Ltd</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="registerBtn" onclick="window.doRegister()">Create Account →</button>
+          <p style="margin-top:14px;text-align:center;font-size:13px;color:var(--ink3)">Already registered? <a href="#" onclick="window.showAuthPanel('login',event)" style="color:var(--blue);font-weight:600">Sign in</a></p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- COMPANY SELECT -->
-<div id="companyScreen" style="display:none">
-  <div class="company-select-page">
-    <div class="company-select-box">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px">
-        <div class="brand-logo" style="margin-bottom:0">
-          <div class="brand-icon">📋</div>
-          <div class="brand-name" style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px">AssetVerify</div>
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="window.doLogout()">Sign out</button>
+<div id="companyScreen">
+  <div class="co-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:36px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="topbar-icon">Ax</div>
+        <div style="font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--ink)">AXON</div>
       </div>
-      <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px">Select Company</div>
-      <div style="font-size:14px;color:var(--ink2);margin-bottom:32px" id="companySelectSub">Choose a company to manage assets</div>
-      <div class="company-cards" id="companyCards"></div>
-      <button onclick="window.openModal('joinModal')" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:2px dashed var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink2);transition:all .18s;width:100%;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink2)'">
-        ＋ Join another company using a code
-      </button>
+      <button class="btn btn-ghost btn-sm" onclick="window.doLogout()">Sign out</button>
     </div>
+    <div class="co-title">Select Company</div>
+    <div class="co-sub" id="companySelectSub">Choose a company to manage assets</div>
+    <div class="co-cards" id="companyCards"></div>
+    <button class="co-join" onclick="window.openModal('joinModal')">＋ Join another company using a code</button>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div id="appScreen">
-  <nav class="navbar">
-    <div style="display:flex;align-items:center;gap:16px">
-      <div class="nav-brand">
-        <div class="nav-brand-icon">📋</div>
-        <div class="nav-brand-name">AssetVerify <span style="font-size:10px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;vertical-align:middle">v2</span></div>
+  <nav class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="topbar-brand">
+        <div class="topbar-icon">Ax</div>
+        <div class="topbar-name">AXON</div>
       </div>
-      <div class="nav-company-pill" id="navCompanyPill">🏢 Company</div>
+      <div class="topbar-sep"></div>
+      <div class="topbar-co">
+        <div class="co-dot"></div>
+        <span id="navCompanyPill">Company</span>
+      </div>
     </div>
-    <div class="nav-right">
-      <span id="syncStatus" title="Sync status"><span class="sync-dot" id="syncDot"></span></span>
-      <span style="font-size:12px;color:var(--ink2)" id="navUserName"></span>
-      <div class="avatar" id="navAvatar">U</div>
+    <div class="topbar-right">
+      <div class="sync-pill">
+        <div class="sync-dot" id="syncDot"></div>
+        <span class="sync-lbl" id="syncLabel">Connecting</span>
+      </div>
+      <div class="user-pill">
+        <div class="user-av" id="navAvatar">U</div>
+        <span class="user-name" id="navUserName"></span>
+      </div>
       <button class="btn btn-ghost btn-sm" onclick="window.switchCompany()">Switch</button>
       <button class="btn btn-ghost btn-sm" onclick="window.doLogout()">Sign out</button>
     </div>
@@ -321,24 +627,24 @@ tr:hover td{background:var(--bg)}
   <div class="app-layout">
     <aside class="sidebar">
       <div class="sidebar-section">
-        <div class="sidebar-label">Main</div>
-        <button class="sidebar-item active" onclick="window.showPage('dashboard')"><span class="s-icon">🏠</span> Dashboard</button>
-        <button class="sidebar-item" onclick="window.showPage('addAsset')"><span class="s-icon">➕</span> Add Asset</button>
-        <button class="sidebar-item" onclick="window.showPage('records')"><span class="s-icon">📄</span> All Records <span class="sidebar-badge" id="sidebarCount">0</span></button>
-        <button class="sidebar-item" onclick="window.showPage('buckets')"><span class="s-icon">🗂️</span> Asset Buckets</button>
-        <button class="sidebar-item" onclick="window.showPage('summary')"><span class="s-icon">📊</span> Summary</button>
-        <button class="sidebar-item" onclick="window.showPage('depreciation')"><span class="s-icon">📉</span> Depreciation</button>
+        <div class="sidebar-label">Overview</div>
+        <button class="sidebar-item active" onclick="window.showPage('dashboard')"><span class="s-icon">🏠</span>Dashboard</button>
+        <button class="sidebar-item" onclick="window.showPage('records')"><span class="s-icon">📋</span>All Records<span class="sidebar-badge" id="sidebarCount">0</span></button>
+        <button class="sidebar-item" onclick="window.showPage('buckets')"><span class="s-icon">🗂</span>Asset Buckets</button>
+        <button class="sidebar-item" onclick="window.showPage('summary')"><span class="s-icon">📊</span>Summary</button>
+        <button class="sidebar-item" onclick="window.showPage('depreciation')"><span class="s-icon">📉</span>Depreciation</button>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-label">Tools</div>
-        <button class="sidebar-item" onclick="window.showPage('import')"><span class="s-icon">📥</span> Import CSV</button>
-        <button class="sidebar-item" onclick="window.exportCSV()"><span class="s-icon">⬇️</span> Export CSV</button>
+        <div class="sidebar-label">Manage</div>
+        <button class="sidebar-item" onclick="window.showPage('addAsset')"><span class="s-icon">➕</span>Add Asset</button>
+        <button class="sidebar-item" onclick="window.showPage('import')"><span class="s-icon">📥</span>Import CSV</button>
+        <button class="sidebar-item" onclick="window.exportCSV()"><span class="s-icon">📤</span>Export CSV</button>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-label">Account</div>
-        <button class="sidebar-item" onclick="window.switchCompany()"><span class="s-icon">🏢</span> Switch Company</button>
-        <button class="sidebar-item" onclick="window.showPage('team')"><span class="s-icon">👥</span> Team Members</button>
-        <button class="sidebar-item" id="adminSidebarBtn" style="display:none" onclick="window.showPage('admin')"><span class="s-icon">🔐</span> Admin Panel</button>
+        <div class="sidebar-label">Settings</div>
+        <button class="sidebar-item" onclick="window.switchCompany()"><span class="s-icon">🏢</span>Switch Company</button>
+        <button class="sidebar-item" onclick="window.showPage('team')"><span class="s-icon">👥</span>Team</button>
+        <button class="sidebar-item" id="adminSidebarBtn" style="display:none" onclick="window.showPage('admin')"><span class="s-icon">🔐</span>Admin Panel</button>
       </div>
     </aside>
 
@@ -349,17 +655,17 @@ tr:hover td{background:var(--bg)}
         <div class="page-header">
           <div>
             <div class="page-title" id="dashTitle">Dashboard</div>
-            <div class="page-sub" id="dashSub">Overview of verified assets</div>
+            <div class="page-sub" id="dashSub">Live asset overview</div>
           </div>
           <button class="btn btn-primary btn-sm" onclick="window.showPage('addAsset')" style="width:auto">＋ Add Asset</button>
         </div>
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Total Assets</div><div class="stat-value" id="dashTotalAssets">—</div><div class="stat-icon">📦</div></div>
-          <div class="stat-card amber"><div class="stat-label">Total Quantity</div><div class="stat-value" id="dashTotalQty">—</div><div class="stat-icon">🔢</div></div>
-          <div class="stat-card green"><div class="stat-label">Total Value</div><div class="stat-value" id="dashTotalVal">—</div><div class="stat-icon">💰</div></div>
-          <div class="stat-card blue"><div class="stat-label">Active Assets</div><div class="stat-value" id="dashActive">—</div><div class="stat-icon">✅</div></div>
+          <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-label">Total Assets</div><div class="stat-value" id="dashTotalAssets">—</div></div>
+          <div class="stat-card amber"><div class="stat-icon">🔢</div><div class="stat-label">Total Quantity</div><div class="stat-value" id="dashTotalQty">—</div></div>
+          <div class="stat-card green"><div class="stat-icon">💰</div><div class="stat-label">Total Value</div><div class="stat-value" id="dashTotalVal">—</div></div>
+          <div class="stat-card purple"><div class="stat-icon">✅</div><div class="stat-label">Active Assets</div><div class="stat-value" id="dashActive">—</div></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
           <div class="card"><div class="card-head"><h3>By Status</h3></div><div class="card-body" id="dashStatus"></div></div>
           <div class="card"><div class="card-head"><h3>By Condition</h3></div><div class="card-body" id="dashCondition"></div></div>
           <div class="card"><div class="card-head"><h3>Top Departments by Value</h3></div><div class="card-body" id="dashDeptSummary"></div></div>
@@ -376,57 +682,28 @@ tr:hover td{background:var(--bg)}
           <div class="card-head"><h3 id="formCardTitle">New Asset Entry</h3></div>
           <div class="card-body">
             <div class="form-grid">
-              <div class="field">
-                <label>Dept. Tag No</label>
-                <input type="text" id="fTag" placeholder="e.g. GGN1/LPT/079" oninput="window.checkDuplicate(this.value)">
-                <div class="dup-hint" id="dupHint">⚠️ This Tag No already exists in the system</div>
-              </div>
+              <div class="field"><label>Dept. Tag No</label><input type="text" id="fTag" placeholder="e.g. GGN1/LPT/079" oninput="window.checkDuplicate(this.value)"><div class="dup-hint" id="dupHint">⚠ This Tag No already exists</div></div>
               <div class="field"><label>Invoice No</label><input type="text" id="fInvoice" placeholder="e.g. ACE/24-25/020"></div>
               <div class="field"><label>Asset Bucket</label>
-                <select id="fBucket">
-                  <option value="">Select bucket…</option>
-                  <option>Computers &amp; Servers</option>
-                  <option>Firewall &amp; Switches</option>
-                  <option>Office Furniture</option>
-                  <option>Electrical Equipment</option>
-                  <option>Vehicles</option>
-                  <option>Software License</option>
-                  <option>Servers Accessories</option>
-                  <option>Other</option>
-                </select>
+                <select id="fBucket"><option value="">Select bucket…</option><option>Computers &amp; Servers</option><option>Firewall &amp; Switches</option><option>Office Furniture</option><option>Electrical Equipment</option><option>Vehicles</option><option>Software License</option><option>Servers Accessories</option><option>Other</option></select>
               </div>
-              <div class="field"><label>Vendor Name *</label><input type="text" id="fVendor" list="vendorList" placeholder="e.g. Dell India Pvt Ltd"><datalist id="vendorList"></datalist></div>
+              <div class="field"><label>Vendor Name *</label><input type="text" id="fVendor" list="vendorList" placeholder="Vendor name"><datalist id="vendorList"></datalist></div>
               <div class="field"><label>Department *</label><input type="text" id="fDept" list="deptList" placeholder="e.g. IT"><datalist id="deptList"></datalist></div>
-              <div class="field"><label>Asset Status</label>
-                <select id="fStatus">
-                  <option value="Active">Active</option>
-                  <option value="Sold">Sold</option>
-                  <option value="Scrapped">Scrapped</option>
-                  <option value="Discarded">Discarded</option>
-                </select>
-              </div>
-              <div class="field span2"><label>Asset Description *</label><input type="text" id="fDesc" placeholder="e.g. Dell Laptop Inspiron 15 — 16GB RAM, 512GB SSD"></div>
-              <div class="field"><label>Serial Number</label><input type="text" id="fSerial" placeholder="e.g. SN/DL/0051"></div>
-              <div class="field"><label>Asset Category</label>
-                <select id="fCategory">
-                  <option value="">Select…</option>
-                  <option>IT Equipment</option><option>Office Furniture</option><option>Machinery</option>
-                  <option>Electrical Equipment</option><option>Vehicle</option><option>Software License</option><option>Other</option>
-                </select>
-              </div>
-              <div class="field"><label>Condition *</label>
-                <select id="fCondition"><option>Good</option><option>Fair</option><option>Poor</option><option>Damaged</option><option>Missing</option></select>
-              </div>
+              <div class="field"><label>Asset Status</label><select id="fStatus"><option>Active</option><option>Sold</option><option>Scrapped</option><option>Discarded</option></select></div>
+              <div class="field span2"><label>Asset Description *</label><input type="text" id="fDesc" placeholder="Full asset description"></div>
+              <div class="field"><label>Serial Number</label><input type="text" id="fSerial" placeholder="S/N"></div>
+              <div class="field"><label>Asset Category</label><select id="fCategory"><option value="">Select…</option><option>IT Equipment</option><option>Office Furniture</option><option>Machinery</option><option>Electrical Equipment</option><option>Vehicle</option><option>Software License</option><option>Other</option></select></div>
+              <div class="field"><label>Condition *</label><select id="fCondition"><option>Good</option><option>Fair</option><option>Poor</option><option>Damaged</option><option>Missing</option></select></div>
               <div class="field"><label>Quantity *</label><input type="number" id="fQty" min="1" value="1"></div>
               <div class="field"><label>Unit Amount (₹) *</label><input type="number" id="fAmount" min="0" placeholder="e.g. 55000"></div>
-              <div class="field"><label>Location / Floor</label><input type="text" id="fLocation" placeholder="e.g. 2nd Floor, Room 201"></div>
-              <div class="field"><label>Invoice Date *</label><input type="date" id="fInvDate"></div>
+              <div class="field"><label>Location</label><input type="text" id="fLocation" placeholder="e.g. 2nd Floor, Room 201"></div>
+              <div class="field"><label>Invoice Date</label><input type="date" id="fInvDate"></div>
               <div class="field"><label>Put to Use Date</label><input type="date" id="fPutToUseDate"></div>
               <div class="field"><label>Verification Date</label><input type="date" id="fDate"></div>
-              <div class="field span3"><label>Remarks</label><textarea id="fRemarks" placeholder="Any additional observations…"></textarea></div>
+              <div class="field span3"><label>Remarks</label><textarea id="fRemarks" placeholder="Additional notes…"></textarea></div>
             </div>
             <div class="form-actions">
-              <button class="btn btn-primary" onclick="window.saveAsset()" id="saveBtn">💾 Save Asset</button>
+              <button class="btn btn-primary" onclick="window.saveAsset()" id="saveBtn" style="width:auto;flex:1">💾 Save Asset</button>
               <button class="btn btn-ghost" onclick="window.clearForm()">Clear</button>
               <button class="btn btn-ghost" id="cancelEditBtn" style="display:none" onclick="window.cancelEdit()">Cancel Edit</button>
             </div>
@@ -437,35 +714,29 @@ tr:hover td{background:var(--bg)}
       <!-- RECORDS -->
       <div class="page" id="page-records">
         <div class="page-header">
-          <div><div class="page-title">Asset Records</div><div class="page-sub" id="recordsSub">All verified assets</div></div>
+          <div><div class="page-title">Asset Records</div><div class="page-sub" id="recordsSub">All assets</div></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-danger btn-sm" id="bulkDeleteBtn" onclick="window.bulkDelete()" style="display:none;width:auto">🗑 Delete Selected (<span id="bulkCount">0</span>)</button>
-            <button class="btn btn-ghost btn-sm" onclick="window.exportCSV()" style="width:auto">⬇ Export CSV</button>
+            <button class="btn btn-danger btn-sm" id="bulkDeleteBtn" onclick="window.bulkDelete()" style="display:none;width:auto">🗑 Delete (<span id="bulkCount">0</span>)</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.exportCSV()" style="width:auto">📤 Export</button>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <div style="flex:1;position:relative">
-            <input type="text" id="quickSearch" placeholder="🔍  Quick search — type anything: tag no, vendor, description, serial, location…" oninput="window.renderTable()" style="width:100%;padding:11px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color .18s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-          </div>
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;white-space:nowrap">
-            <input type="checkbox" id="selectAllChk" onchange="window.toggleSelectAll(this.checked)" style="width:16px;height:16px;cursor:pointer"> Select All
+        <div class="search-bar">
+          <span style="color:var(--ink4);font-size:15px">🔍</span>
+          <input type="text" id="quickSearch" placeholder="Search by tag no, vendor, description, serial, location…" oninput="window.renderTable()">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer;white-space:nowrap;flex-shrink:0">
+            <input type="checkbox" id="selectAllChk" onchange="window.toggleSelectAll(this.checked)" style="cursor:pointer;accent-color:var(--blue);width:14px;height:14px"> Select All
           </label>
         </div>
         <div class="table-toolbar">
-          <div class="field"><label>Search</label><input type="text" id="searchQ" placeholder="Tag, serial, description…" oninput="window.renderTable()"></div>
           <div class="field"><label>Vendor</label><select id="filterV" onchange="window.renderTable()"><option value="">All Vendors</option></select></div>
           <div class="field"><label>Department</label><select id="filterD" onchange="window.renderTable()"><option value="">All Depts</option></select></div>
-          <div class="field"><label>Condition</label>
-            <select id="filterC" onchange="window.renderTable()"><option value="">All</option><option>Good</option><option>Fair</option><option>Poor</option><option>Damaged</option><option>Missing</option></select>
-          </div>
-          <div class="field"><label>Status</label>
-            <select id="filterS" onchange="window.renderTable()"><option value="">All</option><option>Active</option><option>Sold</option><option>Scrapped</option><option>Discarded</option></select>
-          </div>
+          <div class="field"><label>Condition</label><select id="filterC" onchange="window.renderTable()"><option value="">All</option><option>Good</option><option>Fair</option><option>Poor</option><option>Damaged</option><option>Missing</option></select></div>
+          <div class="field"><label>Status</label><select id="filterS" onchange="window.renderTable()"><option value="">All</option><option>Active</option><option>Sold</option><option>Scrapped</option><option>Discarded</option></select></div>
           <div class="field"><label>Bucket</label><select id="filterB" onchange="window.renderTable()"><option value="">All Buckets</option></select></div>
         </div>
         <div class="table-wrap">
           <table><thead><tr>
-            <th style="width:36px"><input type="checkbox" id="headerChk" onchange="window.toggleSelectAll(this.checked)" style="cursor:pointer"></th>
+            <th style="width:36px"><input type="checkbox" id="headerChk" onchange="window.toggleSelectAll(this.checked)" style="cursor:pointer;accent-color:var(--blue)"></th>
             <th onclick="window.sortBy('tagNo')">Dept Tag No</th>
             <th onclick="window.sortBy('invoiceNo')">Invoice No</th>
             <th onclick="window.sortBy('invoiceDate')">Invoice Date</th>
@@ -483,24 +754,22 @@ tr:hover td{background:var(--bg)}
         </div>
       </div>
 
-      <!-- ASSET BUCKETS -->
+      <!-- BUCKETS -->
       <div class="page" id="page-buckets">
-        <div class="page-header">
-          <div><div class="page-title">Asset Buckets</div><div class="page-sub">Assets grouped by bucket / category</div></div>
-        </div>
+        <div class="page-header"><div><div class="page-title">Asset Buckets</div><div class="page-sub">Assets grouped by category</div></div></div>
         <div class="bucket-tabs" id="bucketTabs"></div>
         <div id="bucketContent"></div>
       </div>
 
       <!-- SUMMARY -->
       <div class="page" id="page-summary">
-        <div class="page-header"><div><div class="page-title">Summary Report</div><div class="page-sub">Live totals from cloud database</div></div></div>
+        <div class="page-header"><div><div class="page-title">Summary Report</div><div class="page-sub">Live totals from cloud</div></div></div>
         <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
-          <div class="stat-card"><div class="stat-label">Grand Total Value</div><div class="stat-value" id="sumTotal">₹0</div><div class="stat-icon">💰</div></div>
-          <div class="stat-card green"><div class="stat-label">Total Line Items</div><div class="stat-value" id="sumItems">0</div><div class="stat-icon">📦</div></div>
-          <div class="stat-card amber"><div class="stat-label">Total Quantity</div><div class="stat-value" id="sumQty">0</div><div class="stat-icon">🔢</div></div>
+          <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Grand Total Value</div><div class="stat-value" id="sumTotal">₹0</div></div>
+          <div class="stat-card green"><div class="stat-icon">📦</div><div class="stat-label">Total Line Items</div><div class="stat-value" id="sumItems">0</div></div>
+          <div class="stat-card amber"><div class="stat-icon">🔢</div><div class="stat-label">Total Quantity</div><div class="stat-value" id="sumQty">0</div></div>
         </div>
-        <div class="summary-grid">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
           <div class="card"><div class="card-head"><h3>By Vendor</h3></div><div class="card-body" id="byVendor"></div></div>
           <div class="card"><div class="card-head"><h3>By Department</h3></div><div class="card-body" id="byDept"></div></div>
           <div class="card"><div class="card-head"><h3>By Status</h3></div><div class="card-body" id="byStatus"></div></div>
@@ -513,77 +782,66 @@ tr:hover td{background:var(--bg)}
       <!-- DEPRECIATION -->
       <div class="page" id="page-depreciation">
         <div class="page-header">
-          <div><div class="page-title">Depreciation Register</div><div class="page-sub">As per Companies Act &amp; Income Tax Act</div></div>
+          <div><div class="page-title">Depreciation Register</div><div class="page-sub">Companies Act &amp; Income Tax Act</div></div>
           <div style="display:flex;gap:8px">
             <button class="btn btn-ghost btn-sm" id="depActBtn" onclick="window.switchDepAct('companies')" style="width:auto">Companies Act</button>
             <button class="btn btn-primary btn-sm" id="depItBtn" onclick="window.switchDepAct('it')" style="width:auto">IT Act</button>
           </div>
         </div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--ink2);margin-bottom:20px;line-height:1.7">
-          <b>Companies Act:</b> SLM (Straight Line Method) based on useful life. &nbsp;|&nbsp; <b>IT Act:</b> WDV (Written Down Value) method at prescribed block rates.
-          &nbsp;|&nbsp; Put-to-use date used for pro-rata calculation.
+        <div style="background:var(--blue-lt);border:1px solid var(--blue-bd);border-radius:var(--r-sm);padding:11px 16px;font-size:12px;color:var(--blue);margin-bottom:18px;line-height:1.8">
+          <b>Companies Act:</b> SLM method based on useful life &nbsp;|&nbsp; <b>IT Act:</b> WDV method at prescribed block rates &nbsp;|&nbsp; Put-to-use date used for pro-rata calculation
         </div>
         <div class="table-wrap">
-          <table class="dep-table"><thead><tr>
-            <th>Dept Tag No</th><th>Description</th><th>Bucket</th><th>Put to Use</th>
-            <th>Cost (₹)</th><th>Rate %</th><th>Dep. FY (₹)</th><th>WDV / Net (₹)</th>
+          <table><thead><tr>
+            <th>Dept Tag No</th><th>Description</th><th>Bucket</th><th>Put to Use</th><th>Cost (₹)</th><th>Rate %</th><th>Dep. FY (₹)</th><th>WDV / Net (₹)</th>
           </tr></thead><tbody id="depTableBody"></tbody></table>
         </div>
       </div>
 
       <!-- IMPORT -->
       <div class="page" id="page-import">
-        <div class="page-header">
-          <div><div class="page-title">Import Assets</div><div class="page-sub">Bulk upload from CSV — duplicates are detected automatically</div></div>
-        </div>
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-head"><h3>📋 Required CSV Columns</h3></div>
+        <div class="page-header"><div><div class="page-title">Import Assets</div><div class="page-sub">Bulk upload from CSV — duplicates detected automatically</div></div></div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head"><h3>Required CSV Columns</h3></div>
           <div class="card-body">
-            <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:12px;color:var(--ink);line-height:2">
-              Tag No, Invoice No, Vendor, Department, Category, Description, Serial No, Quantity, Unit Amount, Total Amount, Condition, Location, Verification Date, Remarks
+            <div style="background:var(--surf2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);line-height:2">
+              Tag No, Invoice No, Vendor, Department, Category, Description, Serial No, Quantity, Unit Amount, Total Amount, Condition, Location, Invoice Date, Verification Date, Remarks
             </div>
-            <p style="font-size:12px;color:var(--ink3);margin-top:10px">💡 Condition: Good / Fair / Poor / Damaged / Missing. Dates: YYYY-MM-DD. Duplicates (same Tag No) will be flagged before import.</p>
+            <p style="font-size:12px;color:var(--ink3);margin-top:10px">Condition: Good / Fair / Poor / Damaged / Missing &nbsp;|&nbsp; Dates: YYYY-MM-DD &nbsp;|&nbsp; Duplicate Tag Nos will be flagged before import</p>
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><h3>📤 Upload CSV File</h3></div>
+          <div class="card-head"><h3>Upload CSV File</h3></div>
           <div class="card-body">
-            <div id="importDropZone" onclick="document.getElementById('csvFileInput').click()" style="border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.background='var(--accent-lt)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
-              <div style="font-size:48px;margin-bottom:12px">📂</div>
-              <div style="font-size:16px;font-weight:700;margin-bottom:6px">Click to select CSV file</div>
-              <div style="font-size:13px;color:var(--ink2)">or drag and drop your file here</div>
+            <div class="import-drop" id="importDropZone" onclick="document.getElementById('csvFileInput').click()">
+              <span class="import-drop-icon">📂</span>
+              <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px">Click to select CSV file</div>
+              <div style="font-size:13px;color:var(--ink3)">or drag and drop here</div>
               <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="window.handleCSVFile(event)">
             </div>
             <div id="importPreview" style="display:none;margin-top:20px">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                <div>
-                  <div style="font-weight:700;font-size:15px" id="importFileName"></div>
-                  <div style="font-size:13px;color:var(--ink2)" id="importStats"></div>
-                </div>
+                <div><div style="font-weight:700;font-size:14px;color:var(--ink)" id="importFileName"></div><div style="font-size:12px;color:var(--ink3)" id="importStats"></div></div>
                 <div style="display:flex;gap:8px">
                   <button class="btn btn-ghost btn-sm" onclick="window.clearImport()">✕ Clear</button>
                   <button class="btn btn-primary btn-sm" id="importBtn" onclick="window.runImport()" style="width:auto">🚀 Import to Firebase</button>
                 </div>
               </div>
-              <div id="dupWarning" style="display:none;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;font-size:13px;color:#f57f17;margin-bottom:12px"></div>
-              <div class="table-wrap" style="max-height:320px;overflow-y:auto">
-                <table><thead><tr>
-                  <th>Tag No</th><th>Invoice No</th><th>Vendor</th><th>Dept</th><th>Description</th>
-                  <th>Qty</th><th>Unit ₹</th><th>Total ₹</th><th>Status</th>
-                </tr></thead><tbody id="importTableBody"></tbody></table>
+              <div id="dupWarning" style="display:none;background:var(--amber-lt);border:1px solid #FDE68A;border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:12px"></div>
+              <div class="table-wrap" style="max-height:300px;overflow-y:auto">
+                <table><thead><tr><th>Tag No</th><th>Invoice No</th><th>Vendor</th><th>Dept</th><th>Description</th><th>Qty</th><th>Unit ₹</th><th>Total ₹</th></tr></thead>
+                <tbody id="importTableBody"></tbody></table>
               </div>
             </div>
             <div id="importProgress" style="display:none;margin-top:20px">
-              <div style="font-weight:600;font-size:14px;margin-bottom:8px" id="importProgressText">Importing...</div>
-              <div style="background:var(--border);border-radius:20px;height:8px;overflow:hidden">
-                <div id="importProgressBar" style="background:var(--accent);height:100%;width:0%;transition:width .3s;border-radius:20px"></div>
-              </div>
-              <div style="font-size:12px;color:var(--ink2);margin-top:6px" id="importProgressCount"></div>
+              <div style="font-weight:700;font-size:14px;color:var(--ink);margin-bottom:8px" id="importProgressText">Importing…</div>
+              <div class="progress-track"><div class="progress-fill" id="importProgressBar"></div></div>
+              <div style="font-size:12px;color:var(--ink3);margin-top:6px" id="importProgressCount"></div>
             </div>
-            <div id="importSuccess" style="display:none;margin-top:20px;background:var(--success-lt);border:1px solid #b7dfc8;border-radius:12px;padding:20px;text-align:center">
-              <div style="font-size:36px;margin-bottom:8px">✅</div>
-              <div style="font-weight:700;font-size:16px;color:var(--success)" id="importSuccessText"></div>
-              <button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="window.showPage('records')">View All Records →</button>
+            <div id="importSuccess" style="display:none;margin-top:20px;background:var(--green-lt);border:1px solid #A7F3D0;border-radius:var(--r-lg);padding:24px;text-align:center">
+              <div style="font-size:32px;margin-bottom:8px">✅</div>
+              <div style="font-weight:700;font-size:15px;color:var(--green)" id="importSuccessText"></div>
+              <button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="window.showPage('records')">View Records →</button>
             </div>
           </div>
         </div>
@@ -592,15 +850,15 @@ tr:hover td{background:var(--bg)}
       <!-- TEAM -->
       <div class="page" id="page-team">
         <div class="page-header"><div><div class="page-title">Team Members</div><div class="page-sub">Users with access to this company</div></div></div>
-        <div class="card"><div class="card-head"><h3>Members</h3></div><div class="card-body" id="teamList"></div></div>
-        <div style="margin-top:20px" class="card">
-          <div class="card-head"><h3>Company Code</h3></div>
+        <div class="card" style="margin-bottom:16px"><div class="card-head"><h3>Members</h3></div><div class="card-body" id="teamList"></div></div>
+        <div class="card">
+          <div class="card-head"><h3>Company Access Code</h3></div>
           <div class="card-body">
-            <p style="font-size:13px;color:var(--ink2);margin-bottom:16px">Share this code with your colleague so they can join this company when registering.</p>
-            <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px">
+            <p style="font-size:13px;color:var(--ink3);margin-bottom:16px">Share this code with colleagues so they can join this company when registering.</p>
+            <div style="display:flex;align-items:center;gap:14px;background:var(--surf2);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 18px">
               <div>
-                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin-bottom:4px">Company Code</div>
-                <div id="companyCode" style="font-size:24px;font-weight:800;letter-spacing:.15em;color:var(--accent);font-family:'Syne',sans-serif"></div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:4px">Access Code</div>
+                <div id="companyCode" style="font-size:26px;font-weight:800;letter-spacing:.2em;color:var(--blue);font-family:'DM Mono',monospace"></div>
               </div>
               <button class="btn btn-ghost btn-sm" onclick="window.copyCode()" style="margin-left:auto">Copy</button>
             </div>
@@ -608,24 +866,19 @@ tr:hover td{background:var(--bg)}
         </div>
       </div>
 
-
-      <!-- ADMIN PAGE -->
+      <!-- ADMIN -->
       <div class="page" id="page-admin">
-        <div class="page-header">
-          <div><div class="page-title">🔐 Admin Panel</div><div class="page-sub">Manage user permissions across all companies</div></div>
-        </div>
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-head"><h3>Delete Rights Management</h3><span style="font-size:12px;color:var(--ink2)">Control who can delete assets</span></div>
-          <div class="card-body" id="adminUserList">
-            <div style="color:var(--ink3);font-size:13px">Loading users...</div>
-          </div>
+        <div class="page-header"><div><div class="page-title">🔐 Admin Panel</div><div class="page-sub">Manage user permissions</div></div></div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head"><h3>Delete Rights Management</h3><span style="font-size:12px;color:var(--ink3)">Toggle delete access per user</span></div>
+          <div class="card-body" id="adminUserList"><div style="color:var(--ink3);font-size:13px">Loading users…</div></div>
         </div>
         <div class="card">
           <div class="card-head"><h3>System Info</h3></div>
           <div class="card-body">
-            <div class="summary-row"><span>Admin Account</span><span class="summary-val" style="font-size:13px">sumit.bhatnagar@servetel.co.in</span></div>
+            <div class="summary-row"><span>Admin Account</span><span class="summary-val">sumit.bhatnagar@servetel.co.in</span></div>
             <div class="summary-row"><span>Total Users</span><span class="summary-val" id="adminTotalUsers">—</span></div>
-            <div class="summary-row"><span>Total Assets (all companies)</span><span class="summary-val" id="adminTotalAssets">—</span></div>
+            <div class="summary-row"><span>Platform</span><span class="summary-val">AXON v2.0</span></div>
           </div>
         </div>
       </div>
@@ -634,17 +887,19 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- JOIN COMPANY MODAL -->
+<!-- JOIN MODAL -->
 <div class="modal-overlay" id="joinModal">
   <div class="modal">
-    <div class="modal-title">🏢 Join Another Company</div>
+    <div class="modal-title">🏢 Join Company</div>
     <div class="error-msg" id="joinError"></div>
-    <div class="field"><label>Company Code</label><input type="text" id="joinCode" placeholder="e.g. ACE001" style="text-transform:uppercase;letter-spacing:.1em;font-size:20px;text-align:center"></div>
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--ink2);margin-bottom:16px;line-height:1.7">
-      <b>Pre-set company codes:</b><br>
-      <b>ACE001</b> — Acefone Software Pvt Ltd<br>
-      <b>SRV001</b> — Servetel Communications Pvt Ltd<br>
-      <b>SRV002</b> — Servetel Infocomm Pvt Ltd
+    <div class="field">
+      <label>Company Code</label>
+      <input type="text" id="joinCode" placeholder="e.g. ACE001" style="text-transform:uppercase;letter-spacing:.15em;font-size:20px;text-align:center;font-family:'DM Mono',monospace">
+    </div>
+    <div style="background:var(--surf2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:2">
+      <b style="color:var(--ink2)">ACE001</b> — Acefone Software Pvt Ltd<br>
+      <b style="color:var(--ink2)">SRV001</b> — Servetel Communications Pvt Ltd<br>
+      <b style="color:var(--ink2)">SRV002</b> — Servetel Infocomm Pvt Ltd
     </div>
     <div style="display:flex;gap:10px">
       <button class="btn btn-primary" onclick="window.joinCompany()" style="width:auto;flex:1">Join Company</button>
@@ -655,7 +910,8 @@ tr:hover td{background:var(--bg)}
 
 <div class="toast-container" id="toastContainer"></div>
 
-<script type="module">
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail }
@@ -718,18 +974,18 @@ try {
           if (!currentUser.companies) currentUser.companies = [];
           showCompanyScreen();
         } else {
-          document.getElementById('authScreen').style.display = 'grid';
+          document.getElementById('authScreen').style.display='block';
         }
       } catch(e) {
-        document.getElementById('authScreen').style.display = 'grid';
+        document.getElementById('authScreen').style.display='block';
       }
     } else {
-      document.getElementById('authScreen').style.display = 'grid';
+      document.getElementById('authScreen').style.display='block';
     }
   });
 } catch(e) {
   document.getElementById('loadingOverlay').style.display = 'none';
-  document.getElementById('authScreen').style.display = 'grid';
+  document.getElementById('authScreen').style.display='block';
 }
 
 async function seedCompanies() {
@@ -810,15 +1066,15 @@ window.doLogout = async function() {
   if (auth) await signOut(auth);
   currentUser = null; currentCompany = null; localAssets = [];
   document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('companyScreen').style.display = 'none';
-  document.getElementById('authScreen').style.display = 'grid';
+  document.getElementById('companyScreen').style.display='none';document.getElementById('companyScreen').classList.remove('flex');
+  document.getElementById('authScreen').style.display='block';
 };
 
 // ── COMPANY SCREEN ──
 function showCompanyScreen() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('companyScreen').style.display = 'block';
+  document.getElementById('companyScreen').style.display='flex';document.getElementById('companyScreen').classList.add('flex');
   document.getElementById('companySelectSub').textContent = `Hello ${currentUser.name}! Choose a company to manage.`;
   renderCompanyCards();
 }
@@ -847,7 +1103,7 @@ async function renderCompanyCards() {
 window.enterCompany = function(id) {
   currentCompany = COMPANIES.find(c => c.id === id);
   if (!currentCompany) return;
-  document.getElementById('companyScreen').style.display = 'none';
+  document.getElementById('companyScreen').style.display='none';document.getElementById('companyScreen').classList.remove('flex');
   document.getElementById('appScreen').style.display = 'block';
   initApp();
 };
@@ -892,10 +1148,11 @@ function subscribeAssets() {
 
 function setSyncDot(state) {
   const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLabel');
   dot.className = 'sync-dot';
-  if (state==='synced')  { dot.classList.add('synced');  dot.title='Synced'; }
-  else if (state==='syncing') { dot.classList.add('syncing'); dot.title='Syncing…'; }
-  else { dot.style.background='var(--danger)'; dot.title='Sync error'; }
+  if (state==='synced')  { dot.classList.add('live'); if(lbl) lbl.textContent='Live'; }
+  else if (state==='syncing') { dot.classList.add('syncing'); if(lbl) lbl.textContent='Syncing…'; }
+  else { if(lbl) lbl.textContent='Error'; }
 }
 
 // ── DUPLICATE CHECK ──
@@ -1472,7 +1729,7 @@ async function renderAdmin() {
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
           <div style="font-size:12px;font-weight:600;color:var(--ink2)">Delete Rights</div>
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-            <div onclick="toggleDeleteRight('${u.uid}', ${!u.canDelete})" style="width:44px;height:24px;border-radius:12px;background:${u.canDelete?'var(--success)':'var(--border)'};position:relative;cursor:pointer;transition:background .2s">
+            <div onclick="window.toggleDeleteRight('${u.uid}', ${!u.canDelete})" style="width:44px;height:24px;border-radius:12px;background:${u.canDelete?'var(--success)':'var(--border)'};position:relative;cursor:pointer;transition:background .2s">
               <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;${u.canDelete?'right:2px':'left:2px'};transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
             </div>
             <span style="font-size:12px;font-weight:600;color:${u.canDelete?'var(--success)':'var(--ink3)'}">${u.canDelete?'Granted':'Denied'}</span>
@@ -1510,6 +1767,7 @@ window.closeModal=id=>document.getElementById(id).classList.remove('show');
 window.showError=(id,msg)=>{const el=document.getElementById(id);el.textContent=msg;el.classList.add('show');};
 window.hideError=id=>document.getElementById(id).classList.remove('show');
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');}));
+
 </script>
 </body>
 </html>

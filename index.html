@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-US">
 <head>
 <meta charset="UTF-8">
@@ -697,6 +697,7 @@ tr.pending-row:hover td{background:var(--amber-lt)}
             <th onclick="window.sortBy('total')">Total INR</th>
             <th onclick="window.sortBy('verDate')">Last Verif. Date</th>
             <th onclick="window.sortBy('wdv')" title="WDV as on yesterday (SLM)">WDV as on Date INR</th>
+            <th onclick="window.sortBy('depreciationAsOnDate')" title="Depreciation as on yesterday (Cost - WDV)">Depreciation as on Date INR</th>
             <th onclick="window.sortBy('status')">Status</th>
             <th onclick="window.sortBy('condition')">Condition</th>
             <th>Actions</th>
@@ -1994,7 +1995,17 @@ window.sortBy = function(key) {
 
 function renderTable() {
   const rows=getFiltered().sort((a,b)=>{
-    let va=a[sortKey]||'',vb=b[sortKey]||'';
+    let va, vb;
+    if (sortKey === 'wdv') {
+      va = calcWDVasOnDate(a);
+      vb = calcWDVasOnDate(b);
+    } else if (sortKey === 'depreciationAsOnDate') {
+      va = calcDepAsOnDate(a);
+      vb = calcDepAsOnDate(b);
+    } else {
+      va = a[sortKey]||'';
+      vb = b[sortKey]||'';
+    }
     return typeof va==='number'?(sortAsc?va-vb:vb-va):(sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va)));
   });
   document.getElementById('recordsSub').textContent=rows.length+' assets found';
@@ -2014,6 +2025,7 @@ function renderTable() {
       ?`<td style="padding:4px 8px"><span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;background:${_rowCo?_rowCo.color+'22':'#eee'};color:${_rowCo?_rowCo.color:'#555'}">${_rowCo?_rowCo.code:'?'}</span></td>`
       :'<td style="display:none"></td>';
     const _wdv = calcWDVasOnDate(a);
+    const _dep = calcDepAsOnDate(a);
     const _wdvClass = _wdv < a.total * 0.2 ? 'wdv-lo' : _wdv < a.total * 0.5 ? 'wdv-mid' : 'wdv-hi';
     return `<tr style="${selectedIds.has(a.id)?'background:var(--blue-lt)':''}">${_entCell}
     <td><input type="checkbox" ${selectedIds.has(a.id)?'checked':''} onchange="toggleSelect('${a.id}',this.checked)" style="cursor:pointer;width:15px;height:15px"></td>
@@ -2035,6 +2047,7 @@ function renderTable() {
     <td style="text-align:right;font-weight:700">${fmt(a.total)}</td>
     <td style="font-size:11px;color:var(--ink2);white-space:nowrap">${a.verDate||'-'}</td>
     <td><span class="${_wdvClass}">${fmt(_wdv)}</span></td>
+    <td style="text-align:right;font-weight:700;color:var(--red)">${fmt(_dep)}</td>
     <td><span class="badge status-${a.status||'Active'}">${a.status||'Active'}</span></td>
     <td><span class="badge cond-${a.condition}">${a.condition}</span></td>
     <td style="white-space:nowrap">
@@ -2069,8 +2082,8 @@ function renderBuckets() {
       <div class="stat-card green" style="flex:1"><div class="stat-label">Total Value</div><div class="stat-value">${fmtShort(total)}</div></div>
     </div>
     <div class="table-wrap">
-      <table style="min-width:1400px"><thead><tr><th>Dept Tag No</th><th>Invoice No</th><th>Description</th><th>Vendor</th><th>Dept</th><th>Location</th><th>Exact Location</th><th>User Name</th><th>Emp Code</th><th>Purchased By</th><th>Used By</th><th>Serial No</th><th>Qty</th><th>Unit INR</th><th>Total INR</th><th>Last Verif. Date</th><th style="color:var(--green)">WDV as on Date INR</th><th>Status</th><th>Condition</th></tr></thead>
-      <tbody>${filtered.map(a=>{ const _bwdv=calcWDVasOnDate(a); const _bc=_bwdv<a.total*0.2?'wdv-lo':_bwdv<a.total*0.5?'wdv-mid':'wdv-hi'; return `<tr>
+      <table style="min-width:1400px"><thead><tr><th>Dept Tag No</th><th>Invoice No</th><th>Description</th><th>Vendor</th><th>Dept</th><th>Location</th><th>Exact Location</th><th>User Name</th><th>Emp Code</th><th>Purchased By</th><th>Used By</th><th>Serial No</th><th>Qty</th><th>Unit INR</th><th>Total INR</th><th>Last Verif. Date</th><th style="color:var(--green)">WDV as on Date INR</th><th style="color:var(--red)">Depreciation as on Date INR</th><th>Status</th><th>Condition</th></tr></thead>
+      <tbody>${filtered.map(a=>{ const _bwdv=calcWDVasOnDate(a); const _bdep=calcDepAsOnDate(a); const _bc=_bwdv<a.total*0.2?'wdv-lo':_bwdv<a.total*0.5?'wdv-mid':'wdv-hi'; return `<tr>
         <td><b style="color:var(--blue);font-size:11px;font-family:monospace">${a.tagNo||'-'}</b></td>
         <td style="font-family:monospace;font-size:11px;color:var(--ink2)">${a.invoiceNo||'-'}</td>
         <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.description}</td>
@@ -2088,9 +2101,10 @@ function renderBuckets() {
         <td style="text-align:right;font-weight:700">${fmt(a.total)}</td>
         <td style="font-size:11px;color:var(--ink2);white-space:nowrap">${a.verDate||'-'}</td>
         <td><span class="${_bc}">${fmt(_bwdv)}</span></td>
+        <td style="text-align:right;font-weight:700;color:var(--red)">${fmt(_bdep)}</td>
         <td><span class="badge status-${a.status||'Active'}">${a.status||'Active'}</span></td>
         <td><span class="badge cond-${a.condition}">${a.condition}</span></td>
-      </tr>`; }).join('')||'<tr><td colspan="19"><div class="empty-state"><div class="empty-icon">-</div><div class="empty-title">No assets in this bucket</div></div></td></tr>'}
+      </tr>`; }).join('')||'<tr><td colspan="20"><div class="empty-state"><div class="empty-icon">-</div><div class="empty-title">No assets in this bucket</div></div></td></tr>'}
       </tbody></table>
     </div>`;
 }
@@ -2128,6 +2142,11 @@ function calcWDVasOnDate(asset) {
 
   // Floor at salvage value (5% of cost)
   return Math.max(wdv, cost * SALVAGE);
+}
+function calcDepAsOnDate(asset) {
+  const cost = Number(asset.total || 0);
+  const wdv  = Number(calcWDVasOnDate(asset) || 0);
+  return Math.max(0, Math.round((cost - wdv) * 100) / 100);
 }
 
 window.setBucket = function(b) { activeBucket=b; renderBuckets(); };
@@ -3132,14 +3151,14 @@ window.exportCSV = function(forceAll=false) {
              'Description','Serial No','Quantity','Unit Amount','Total Amount',
              'Status','Condition','Location','Exact Location','User Name','Emp Code',
              'Purchased By','Used By','Invoice Date','Put to Use Date',
-             'Last Verif. Date','WDV as on Date','Remarks'];
+             'Last Verif. Date','WDV as on Date','Depreciation as on Date','Remarks'];
   const csv = [h.join(','), ...rows.map(a => [
     a.tagNo||'', a.invoiceNo||'', a.vendor, a.department, a.bucket||'', a.category||'',
     `"${a.description}"`, a.serialNo||'', a.quantity, a.amount, a.total,
     a.status||'Active', a.condition, a.location||'', a.exactLocation||'',
     a.userName||'', a.empCode||'', a.purchasedBy||'', a.usedBy||'',
     a.invoiceDate||'', a.putToUseDate||'', a.verDate||'',
-    calcWDVasOnDate(a), `"${a.remarks||''}"`
+    calcWDVasOnDate(a), calcDepAsOnDate(a), `"${a.remarks||''}"`
   ].join(','))].join('\n');
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const l = document.createElement('a'); l.href = url;
